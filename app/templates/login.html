@@ -1,0 +1,42 @@
+<!-- app/templates/login.html -->
+{% extends "base.html" %}
+{% block title %}Login - HealthPredict AI{% endblock %}
+
+{% block content %}
+<section style="padding: 5rem 0;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-5">
+                <div class="card-dark animate-in">
+                    <div class="text-center mb-4">
+                        <i class="fas fa-heartbeat" style="font-size: 2.5rem; color: var(--accent);"></i>
+                        <h3 style="font-family: 'Space Grotesk'; font-weight: 700; margin-top: 0.8rem;">Welcome Back</h3>
+                        <p style="color: var(--text-muted);">Login to access your health dashboard</p>
+                    </div>
+
+                    <form method="POST" action="{{ url_for('auth.login') }}">
+                        <div class="mb-3">
+                            <label class="form-label">Email Address</label>
+                            <input type="email" name="email" class="form-control form-control-dark" placeholder="your@email.com" required>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Password</label>
+                            <input type="password" name="password" class="form-control form-control-dark" placeholder="Enter password" required>
+                        </div>
+                        <button type="submit" class="btn btn-accent w-100">
+                            <i class="fas fa-sign-in-alt me-2"></i>Login
+                        </button>
+                    </form>
+
+                    <div class="text-center mt-4">
+                        <p style="color: var(--text-muted);">
+                            Don't have an account?
+                            <a href="{{ url_for('auth.register') }}" style="color: var(--accent); text-decoration: none; font-weight: 600;">Register here</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

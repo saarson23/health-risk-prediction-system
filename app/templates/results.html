@@ -1,0 +1,105 @@
+<!-- app/templates/results.html -->
+{% extends "base.html" %}
+{% block title %}Results - HealthPredict AI{% endblock %}
+
+{% block content %}
+<section style="padding: 3rem 0;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+
+                <!-- Result Header -->
+                <div class="card-dark text-center animate-in" style="border-top: 4px solid {{ result.risk_color }};">
+                    <h3 style="font-family: 'Space Grotesk'; font-weight: 700;">
+                        <i class="fas fa-file-medical-alt me-2"></i>{{ result.disease_type }} Prediction Result
+                    </h3>
+
+                    <!-- Risk Level Badge -->
+                    <div style="margin: 2rem 0;">
+                        <div style="width: 150px; height: 150px; border-radius: 50%; border: 6px solid {{ result.risk_color }}; display: flex; align-items: center; justify-content: center; flex-direction: column; margin: 0 auto;">
+                            <span style="font-family: 'Space Grotesk'; font-size: 2rem; font-weight: 700; color: {{ result.risk_color }};">
+                                {{ result.probability_percent }}
+                            </span>
+                            <span style="font-size: 0.8rem; color: var(--text-muted);">Risk Score</span>
+                        </div>
+                    </div>
+
+                    <!-- Prediction Label -->
+                    <h4 style="color: {{ result.risk_color }};">{{ result.prediction_label }}</h4>
+                    <span class="badge-risk-{{ result.risk_level|lower }}" style="font-size: 1rem;">
+                        <i class="fas fa-exclamation-triangle me-1"></i>{{ result.risk_level }} Risk
+                    </span>
+                </div>
+
+                <!-- Details -->
+                <div class="row g-3 mt-3">
+                    <div class="col-md-6 animate-in delay-1">
+                        <div class="stat-card">
+                            <div class="stat-number" style="color: var(--accent);">{{ result.confidence }}</div>
+                            <div class="stat-label">Model Confidence</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 animate-in delay-2">
+                        <div class="stat-card">
+                            <div class="stat-number" style="color: {{ result.risk_color }};">{{ result.risk_level }}</div>
+                            <div class="stat-label">Risk Assessment</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Doctor Recommendations -->
+                {% if result.recommendations %}
+                <div class="card-dark mt-4 animate-in delay-3">
+                    <h5 style="font-family: 'Space Grotesk'; margin-bottom: 1rem;">
+                        <i class="fas fa-user-md me-2" style="color: var(--accent);"></i>Doctor Recommendations
+                    </h5>
+                    {% for rec in result.recommendations %}
+                    <div style="padding: 0.8rem 1rem; background: var(--glass); border-radius: 10px; margin-bottom: 0.5rem; border-left: 3px solid var(--accent);">
+                        <strong style="color: var(--accent);">{{ rec.specialist }}</strong>
+                        <p style="color: var(--text-muted); margin: 0.2rem 0 0; font-size: 0.9rem;">{{ rec.reason }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <!-- Health Tips based on Risk Level -->
+                <div class="card-dark mt-4 animate-in delay-4">
+                    <h5 style="font-family: 'Space Grotesk'; margin-bottom: 1rem;">
+                        <i class="fas fa-lightbulb me-2" style="color: var(--warning);"></i>Health Tips
+                    </h5>
+                    {% if result.risk_level == 'Critical' or result.risk_level == 'High' %}
+                    <div style="background: rgba(231,76,60,0.1); padding: 1rem; border-radius: 10px; margin-bottom: 0.8rem;">
+                        <strong style="color: #e74c3c;"><i class="fas fa-exclamation-circle me-1"></i>Important:</strong>
+                        <span style="color: var(--text-muted);"> Please consult a healthcare professional as soon as possible. This is a screening tool only.</span>
+                    </div>
+                    {% endif %}
+                    <ul style="color: var(--text-muted); padding-left: 1.2rem; line-height: 2;">
+                        <li>Maintain a balanced diet rich in fruits and vegetables</li>
+                        <li>Exercise regularly (at least 30 minutes, 5 days a week)</li>
+                        <li>Monitor your blood pressure and glucose levels regularly</li>
+                        <li>Avoid smoking and limit alcohol consumption</li>
+                        <li>Schedule regular health check-ups with your doctor</li>
+                    </ul>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="d-flex gap-3 mt-4 justify-content-center animate-in delay-4">
+                    <a href="{{ url_for('predict.predict') }}" class="btn btn-accent">
+                        <i class="fas fa-redo me-2"></i>New Prediction
+                    </a>
+                    <a href="{{ url_for('dashboard.index') }}" class="btn btn-outline-light-custom">
+                        <i class="fas fa-chart-line me-2"></i>View Dashboard
+                    </a>
+                </div>
+
+                <!-- Disclaimer -->
+                <div class="text-center mt-4" style="color: var(--text-muted); font-size: 0.8rem;">
+                    <i class="fas fa-info-circle me-1"></i>
+                    This prediction is generated by a machine learning model for educational purposes only.
+                    It should not be used as a substitute for professional medical advice, diagnosis, or treatment.
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

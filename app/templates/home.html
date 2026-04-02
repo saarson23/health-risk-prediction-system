@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block title %}HealthPredict AI - Home{% endblock %}
+{% block content %}
+<section style="padding: 6rem 0 4rem; position: relative; overflow: hidden;">
+    <div style="position: absolute; top: -200px; right: -200px; width: 600px; height: 600px; background: radial-gradient(circle, rgba(0,201,167,0.08) 0%, transparent 70%); border-radius: 50%;"></div>
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-7 animate-in">
+                <span style="background: rgba(0,201,167,0.12); color: var(--accent); padding: 0.4rem 1rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">
+                    <i class="fas fa-robot me-1"></i> AI-Powered Health Analysis
+                </span>
+                <h1 style="font-family: 'Space Grotesk', sans-serif; font-size: 3.2rem; font-weight: 700; margin-top: 1.5rem; line-height: 1.15;">
+                    Predict Health Risks<br>
+                    <span class="glow-accent" style="color: var(--accent);">Before They Happen</span>
+                </h1>
+                <p style="color: var(--text-muted); font-size: 1.1rem; max-width: 520px; margin-top: 1.5rem; line-height: 1.7;">
+                    Tell us your symptoms and our AI will predict possible diseases, show risk levels, and recommend precautions. Simple, fast, and free.
+                </p>
+                <div class="d-flex gap-3 mt-4 flex-wrap">
+                    {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('symptom.symptom_checker') }}" class="btn btn-accent">
+                        <i class="fas fa-robot me-2"></i>Check Symptoms
+                    </a>
+                    <a href="{{ url_for('dashboard.index') }}" class="btn btn-outline-light-custom">
+                        <i class="fas fa-chart-line me-2"></i>Dashboard
+                    </a>
+                    {% else %}
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-accent">
+                        <i class="fas fa-user-plus me-2"></i>Get Started Free
+                    </a>
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-outline-light-custom">
+                        <i class="fas fa-sign-in-alt me-2"></i>Login
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-5 text-center animate-in delay-2">
+                <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 24px; padding: 2rem; margin-top: 2rem;">
+                    <i class="fas fa-heartbeat" style="font-size: 4rem; color: var(--accent); opacity: 0.8;"></i>
+                    <div class="mt-3" style="font-family: 'Space Grotesk'; font-size: 1rem; color: var(--text-muted);">Powered by 7 ML Algorithms</div>
+                    <div class="d-flex justify-content-around mt-4">
+                        <div><div style="font-family: 'Space Grotesk'; font-size: 1.6rem; font-weight: 700; color: var(--accent);">85%+</div><div class="stat-label">Accuracy</div></div>
+                        <div><div style="font-family: 'Space Grotesk'; font-size: 1.6rem; font-weight: 700; color: var(--primary);">41</div><div class="stat-label">Diseases</div></div>
+                        <div><div style="font-family: 'Space Grotesk'; font-size: 1.6rem; font-weight: 700; color: var(--warning);">131</div><div class="stat-label">Symptoms</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section style="padding: 4rem 0;">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">How It Works</h2>
+            <p class="section-subtitle">Three simple steps to check your health</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4 animate-in delay-1">
+                <div class="card-dark text-center" style="height: 100%;">
+                    <div style="width: 70px; height: 70px; border-radius: 16px; background: rgba(0,201,167,0.12); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.2rem;">
+                        <i class="fas fa-comment-medical" style="font-size: 1.8rem; color: var(--accent);"></i>
+                    </div>
+                    <h5 style="font-family: 'Space Grotesk'; font-weight: 600;">1. Tell Your Symptoms</h5>
+                    <p style="color: var(--text-muted); font-size: 0.95rem;">Search or browse 131 symptoms by category. Select everything you are experiencing.</p>
+                </div>
+            </div>
+            <div class="col-md-4 animate-in delay-2">
+                <div class="card-dark text-center" style="height: 100%;">
+                    <div style="width: 70px; height: 70px; border-radius: 16px; background: rgba(13,110,253,0.12); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.2rem;">
+                        <i class="fas fa-brain" style="font-size: 1.8rem; color: var(--primary);"></i>
+                    </div>
+                    <h5 style="font-family: 'Space Grotesk'; font-weight: 600;">2. AI Analyses</h5>
+                    <p style="color: var(--text-muted); font-size: 0.95rem;">Our trained ML model analyses your symptoms against 41 diseases and calculates risk levels.</p>
+                </div>
+            </div>
+            <div class="col-md-4 animate-in delay-3">
+                <div class="card-dark text-center" style="height: 100%;">
+                    <div style="width: 70px; height: 70px; border-radius: 16px; background: rgba(243,156,18,0.12); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.2rem;">
+                        <i class="fas fa-file-medical-alt" style="font-size: 1.8rem; color: var(--warning);"></i>
+                    </div>
+                    <h5 style="font-family: 'Space Grotesk'; font-weight: 600;">3. Get Results</h5>
+                    <p style="color: var(--text-muted); font-size: 0.95rem;">See predicted disease, confidence score, description, precautions, and top 3 possibilities.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section style="padding: 4rem 0;">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">What We Predict</h2>
+            <p class="section-subtitle">41 diseases across multiple categories</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4 animate-in delay-1">
+                <div class="card-dark" style="border-left: 4px solid #2ecc71;">
+                    <h5><i class="fas fa-virus me-2" style="color: #2ecc71;"></i>Symptom-Based</h5>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">Select your symptoms from 131 options and get instant AI prediction across 41 diseases including Malaria, Typhoid, Pneumonia, Diabetes, and more.</p>
+                    <a href="{% if current_user.is_authenticated %}{{ url_for('symptom.symptom_checker') }}{% else %}{{ url_for('auth.register') }}{% endif %}" class="btn btn-accent btn-sm mt-2"><i class="fas fa-robot me-1"></i>Try Now</a>
+                </div>
+            </div>
+            <div class="col-md-4 animate-in delay-2">
+                <div class="card-dark" style="border-left: 4px solid #e74c3c;">
+                    <h5><i class="fas fa-heart me-2" style="color: #e74c3c;"></i>Heart Disease</h5>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">Advanced prediction using clinical data like blood pressure, cholesterol, ECG results. For users with medical records.</p>
+                    <a href="{% if current_user.is_authenticated %}{{ url_for('predict.predict') }}{% else %}{{ url_for('auth.register') }}{% endif %}" class="btn btn-outline-light-custom btn-sm mt-2"><i class="fas fa-file-medical me-1"></i>Advanced</a>
+                </div>
+            </div>
+            <div class="col-md-4 animate-in delay-3">
+                <div class="card-dark" style="border-left: 4px solid #3498db;">
+                    <h5><i class="fas fa-tint me-2" style="color: #3498db;"></i>Diabetes</h5>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">Advanced diabetes risk assessment using glucose, BMI, insulin levels. Requires lab test results.</p>
+                    <a href="{% if current_user.is_authenticated %}{{ url_for('predict.predict') }}{% else %}{{ url_for('auth.register') }}{% endif %}" class="btn btn-outline-light-custom btn-sm mt-2"><i class="fas fa-file-medical me-1"></i>Advanced</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,10 @@
+venv/
+instance/
+__pycache__/
+*.pyc
+.env
+deploy.zip
+*.pkl
+data/
+notebooks/
+.ipynb_checkpoints/
