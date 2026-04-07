@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Add Doctor - Admin{% endblock %}
+{% block content %}
+<section style="padding: 3rem 0;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card-dark">
+                    <h3 style="font-family: 'Space Grotesk'; margin-bottom: 1.5rem;"><i class="fas fa-user-md me-2" style="color: var(--accent);"></i>Add New Doctor</h3>
+                    <form method="POST">
+                        <div class="row g-3">
+                            <div class="col-md-6"><label class="form-label">Doctor Name</label><input type="text" name="doctor_name" class="form-control form-control-dark" placeholder="Dr. Full Name" required></div>
+                            <div class="col-md-6"><label class="form-label">Department</label><input type="text" name="department" class="form-control form-control-dark" placeholder="e.g. Cardiology" required></div>
+                            <div class="col-md-6"><label class="form-label">Hospital Name</label><input type="text" name="hospital_name" class="form-control form-control-dark" placeholder="Hospital name" required></div>
+                            <div class="col-md-6"><label class="form-label">Location</label><input type="text" name="location" class="form-control form-control-dark" placeholder="e.g. Kathmandu"></div>
+                            <div class="col-md-6"><label class="form-label">Phone</label><input type="text" name="phone" class="form-control form-control-dark" placeholder="+977-XXXXXXXXXX"></div>
+                            <div class="col-md-6"><label class="form-label">Rating (1-5)</label><input type="number" step="0.1" min="1" max="5" name="rating" class="form-control form-control-dark" placeholder="e.g. 4.2"></div>
+                            <div class="col-md-12"><label class="form-label">Qualification</label><input type="text" name="qualification" class="form-control form-control-dark" placeholder="e.g. MBBS MD Cardiology"></div>
+                            <div class="col-md-6"><label class="form-label">OPD Schedule</label><input type="text" name="opd_schedule" class="form-control form-control-dark" placeholder="e.g. Sun-Fri 9am-5pm"></div>
+                            <div class="col-md-6"><label class="form-label">Hospital Hours</label><input type="text" name="hours" class="form-control form-control-dark" placeholder="e.g. Open 24 hours"></div>
+                            <div class="col-md-6"><label class="form-label">Hospital Type</label><input type="text" name="type" class="form-control form-control-dark" placeholder="e.g. Private Multi-specialty"></div>
+                            <div class="col-md-12"><label class="form-label">Diseases Treated</label><input type="text" name="diseases_treated" class="form-control form-control-dark" placeholder="e.g. heart disease hypertension diabetes"></div>
+                            <div class="col-md-12"><label class="form-label">Notes</label><input type="text" name="notes" class="form-control form-control-dark" placeholder="Additional notes"></div>
+                        </div>
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-accent"><i class="fas fa-plus me-2"></i>Add Doctor</button>
+                            <a href="{{ url_for('admin.admin_doctors') }}" class="btn btn-outline-light-custom">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

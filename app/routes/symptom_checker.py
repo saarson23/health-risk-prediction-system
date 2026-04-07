@@ -9,6 +9,7 @@ import numpy as np
 import pandas as pd
 import json
 import os
+from app.utils.doctor_recommender import recommend_doctors
 
 symptom_bp = Blueprint('symptom', __name__)
 
@@ -196,7 +197,8 @@ def predict_symptoms():
             for d, p in zip(top3_diseases, top3_proba)
         ],
         'symptoms_checked': [format_symptom_name(s) for s in selected_symptoms],
-        'related_symptoms': related
+        'related_symptoms': related,
+        'doctors': recommend_doctors(primary_disease, max_results=5)
     }
 
     return jsonify(result)

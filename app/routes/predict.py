@@ -8,6 +8,7 @@ import joblib
 import numpy as np
 import json
 import os
+from app.utils.doctor_recommender import recommend_doctors
 
 predict_bp = Blueprint('predict', __name__)
 
@@ -158,24 +159,14 @@ def predict_diabetes(form_data):
 
 
 def get_heart_recommendations(risk_level):
-    """Get doctor recommendations based on heart disease risk."""
-    base = [
-        {'specialist': 'Cardiologist', 'reason': 'Heart health specialist for detailed cardiac assessment'},
-        {'specialist': 'General Physician', 'reason': 'Regular health check-up and monitoring'},
-    ]
-    if risk_level in ['High', 'Critical']:
-        base.insert(0, {'specialist': 'Emergency Cardiologist', 'reason': 'Immediate cardiac evaluation recommended'})
-        base.append({'specialist': 'Nutritionist', 'reason': 'Heart-healthy diet plan'})
-    return base
+    doctors = recommend_doctors('Heart attack', max_results=5)
+    if doctors:
+        return [{'specialist': d['doctor_name'], 'reason': d['department'] + ' at ' + d['hospital'] + ' | ' + d['qualification'] + ' | ' + d['opd_schedule'] + ' | Rating: ' + str(d['rating']) + ' | Phone: ' + d['phone']} for d in doctors]
+    return [{'specialist': 'Cardiologist', 'reason': 'Please consult a heart specialist'}]
 
 
 def get_diabetes_recommendations(risk_level):
-    """Get doctor recommendations based on diabetes risk."""
-    base = [
-        {'specialist': 'Endocrinologist', 'reason': 'Diabetes specialist for blood sugar management'},
-        {'specialist': 'General Physician', 'reason': 'Regular health monitoring'},
-    ]
-    if risk_level in ['High', 'Critical']:
-        base.insert(0, {'specialist': 'Diabetologist', 'reason': 'Immediate blood sugar assessment needed'})
-        base.append({'specialist': 'Dietitian', 'reason': 'Diabetes-friendly nutrition plan'})
-    return base
+    doctors = recommend_doctors('Diabetes', max_results=5)
+    if doctors:
+        return [{'specialist': d['doctor_name'], 'reason': d['department'] + ' at ' + d['hospital'] + ' | ' + d['qualification'] + ' | ' + d['opd_schedule'] + ' | Rating: ' + str(d['rating']) + ' | Phone: ' + d['phone']} for d in doctors]
+    return [{'specialist': 'Endocrinologist', 'reason': 'Please consult a diabetes specialist'}]
