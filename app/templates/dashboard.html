@@ -107,7 +107,7 @@
             <div class="text-center" style="padding: 3rem; color: var(--text-muted);">
                 <i class="fas fa-inbox" style="font-size: 3rem; opacity: 0.3;"></i>
                 <p class="mt-2">No predictions yet. Start your first health assessment!</p>
-                <a href="{{ url_for('predict.predict') }}" class="btn btn-accent mt-2">
+                <a href="{{ url_for('symptom.symptom_checker') }}" class="btn btn-accent mt-2">
                     <i class="fas fa-stethoscope me-2"></i>Make a Prediction
                 </a>
             </div>
@@ -116,7 +116,7 @@
 
         <!-- Quick Actions -->
         <div class="d-flex gap-3 mt-4 justify-content-center">
-            <a href="{{ url_for('predict.predict') }}" class="btn btn-accent">
+            <a href="{{ url_for('symptom.symptom_checker') }}" class="btn btn-accent">
                 <i class="fas fa-plus me-2"></i>New Prediction
             </a>
             <a href="{{ url_for('dashboard.history') }}" class="btn btn-outline-light-custom">

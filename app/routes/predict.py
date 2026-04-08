@@ -9,6 +9,7 @@ import numpy as np
 import json
 import os
 from app.utils.doctor_recommender import recommend_doctors
+from app.utils.email_alerts import send_health_alert
 
 predict_bp = Blueprint('predict', __name__)
 
@@ -57,6 +58,24 @@ def predict():
             )
             db.session.add(prediction)
             db.session.commit()
+
+            # Send email alert for High/Critical risk
+            if result['risk_level'] in ['High', 'Critical']:
+                try:
+                    docs = result.get('recommendations', [])
+                    doctor_list = [{'doctor_name': d['specialist'], 'department': d.get('reason','').split(' at ')[0] if ' at ' in d.get('reason','') else '', 'hospital': d.get('reason','').split(' at ')[1].split(' | ')[0] if ' at ' in d.get('reason','') else '', 'phone': d.get('reason','').split('Phone: ')[1] if 'Phone: ' in d.get('reason','') else ''} for d in docs[:3]]
+                    precaution_list = ['Consult the recommended doctor immediately', 'Monitor your symptoms closely', 'Maintain a healthy lifestyle']
+                    send_health_alert(
+                        user_email=current_user.email,
+                        username=current_user.username,
+                        disease=result['disease_type'],
+                        risk_level=result['risk_level'],
+                        probability=result['probability_percent'],
+                        precautions=precaution_list,
+                        doctors=doctor_list
+                    )
+                except Exception as e:
+                    print(f'Email alert error: {e}')
 
             return render_template('results.html', result=result)
 

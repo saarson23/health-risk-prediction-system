@@ -1,4 +1,5 @@
 from flask import Flask
+from app.utils.email_alerts import mail
 from flask_login import LoginManager
 import os
 
@@ -13,6 +14,14 @@ def create_app():
     from app.models.database import db
     db.init_app(app)
     login_manager.init_app(app)
+    app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+    app.config['MAIL_PORT'] = 587
+    app.config['MAIL_USE_TLS'] = True
+    app.config['MAIL_USERNAME'] = 'aarsonsubba67@gmail.com'
+    app.config['MAIL_PASSWORD'] = 'ayfoxvhkixaxayhs'
+    app.config['MAIL_DEFAULT_SENDER'] = 'aarsonsubba67@gmail.com'
+    mail.init_app(app)
+
     login_manager.login_view = 'auth.login'
 
     from app.routes.auth import auth_bp

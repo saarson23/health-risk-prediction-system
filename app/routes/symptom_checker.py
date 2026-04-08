@@ -10,6 +10,7 @@ import pandas as pd
 import json
 import os
 from app.utils.doctor_recommender import recommend_doctors
+from app.utils.email_alerts import send_health_alert
 
 symptom_bp = Blueprint('symptom', __name__)
 
@@ -200,6 +201,23 @@ def predict_symptoms():
         'related_symptoms': related,
         'doctors': recommend_doctors(primary_disease, max_results=5)
     }
+
+    # Send email alert for High/Critical risk
+    if risk_level in ['High', 'Critical']:
+        try:
+            doctors_for_email = recommend_doctors(primary_disease, max_results=3)
+            send_health_alert(
+                user_email=current_user.email,
+                username=current_user.username,
+                disease=primary_disease,
+                risk_level=risk_level,
+                probability=f"{primary_confidence * 100:.1f}",
+                precautions=precautions,
+                doctors=doctors_for_email
+            )
+            print(f'Email sent to {current_user.email}!')
+        except Exception as e:
+            print(f'Email error: {e}')
 
     return jsonify(result)
 
