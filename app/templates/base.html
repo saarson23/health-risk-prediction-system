@@ -25,149 +25,45 @@
             --border: rgba(255,255,255,0.07);
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'DM Sans', sans-serif;
-            background: var(--bg-dark);
-            color: var(--text-main);
-            min-height: 100vh;
-        }
-
-        /* Navbar */
-        .navbar-custom {
-            background: rgba(11,17,32,0.92);
-            backdrop-filter: blur(24px);
-            border-bottom: 1px solid var(--border);
-            padding: 0.6rem 0;
-            position: sticky; top: 0; z-index: 1000;
-        }
-        .navbar-brand {
-            font-family: 'Space Grotesk', sans-serif;
-            font-weight: 700; font-size: 1.3rem;
-            color: var(--accent) !important;
-            display: flex; align-items: center; gap: 8px;
-        }
-        .navbar-brand i { font-size: 1.1rem; }
-        .nav-link {
-            color: var(--text-muted) !important;
-            font-weight: 500; font-size: 0.9rem;
-            padding: 0.45rem 0.85rem !important;
-            border-radius: 8px; transition: all 0.25s;
-        }
-        .nav-link:hover, .nav-link.active {
-            color: var(--text-main) !important;
-            background: var(--glass);
-        }
+        body { font-family: 'DM Sans', sans-serif; background: var(--bg-dark); color: var(--text-main); min-height: 100vh; }
+        .navbar-custom { background: rgba(11,17,32,0.92); backdrop-filter: blur(24px); border-bottom: 1px solid var(--border); padding: 0.6rem 0; position: sticky; top: 0; z-index: 1000; }
+        .navbar-brand { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1.3rem; color: var(--accent) !important; }
+        .nav-link { color: var(--text-muted) !important; font-weight: 500; font-size: 0.9rem; padding: 0.45rem 0.85rem !important; border-radius: 8px; transition: all 0.25s; }
+        .nav-link:hover, .nav-link.active { color: var(--text-main) !important; background: var(--glass); }
         .navbar-toggler { border-color: var(--border); }
         .navbar-toggler-icon { filter: invert(0.7); }
-
-        /* Cards */
-        .card-dark {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 1.5rem;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        .card-dark:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-            background: var(--bg-card-hover);
-        }
-
-        /* Buttons */
-        .btn-accent {
-            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
-            color: #fff; border: none;
-            padding: 0.65rem 1.8rem; border-radius: 10px;
-            font-weight: 600; font-size: 0.95rem;
-            transition: all 0.3s;
-        }
-        .btn-accent:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,201,167,0.3);
-            color: #fff;
-        }
-        .btn-outline-light-custom {
-            border: 1px solid var(--border);
-            color: var(--text-main); background: transparent;
-            padding: 0.65rem 1.8rem; border-radius: 10px;
-            font-weight: 600; font-size: 0.95rem;
-            transition: all 0.3s;
-        }
-        .btn-outline-light-custom:hover {
-            background: var(--glass);
-            color: var(--text-main); border-color: var(--accent);
-        }
-
-        /* Forms */
-        .form-control-dark {
-            background: var(--bg-dark); border: 1px solid var(--border);
-            color: var(--text-main); border-radius: 10px; padding: 0.7rem 1rem;
-        }
-        .form-control-dark:focus {
-            background: var(--bg-dark); border-color: var(--accent);
-            color: var(--text-main); box-shadow: 0 0 0 3px rgba(0,201,167,0.12);
-        }
+        .card-dark { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; transition: transform 0.3s, box-shadow 0.3s; }
+        .card-dark:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.25); background: var(--bg-card-hover); }
+        .btn-accent { background: linear-gradient(135deg, var(--accent), var(--accent-dark)); color: #fff; border: none; padding: 0.65rem 1.8rem; border-radius: 10px; font-weight: 600; font-size: 0.95rem; transition: all 0.3s; }
+        .btn-accent:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,201,167,0.3); color: #fff; }
+        .btn-outline-light-custom { border: 1px solid var(--border); color: var(--text-main); background: transparent; padding: 0.65rem 1.8rem; border-radius: 10px; font-weight: 600; font-size: 0.95rem; transition: all 0.3s; }
+        .btn-outline-light-custom:hover { background: var(--glass); color: var(--text-main); border-color: var(--accent); }
+        .form-control-dark { background: var(--bg-dark); border: 1px solid var(--border); color: var(--text-main); border-radius: 10px; padding: 0.7rem 1rem; }
+        .form-control-dark:focus { background: var(--bg-dark); border-color: var(--accent); color: var(--text-main); box-shadow: 0 0 0 3px rgba(0,201,167,0.12); }
         .form-control-dark::placeholder { color: var(--text-muted); }
         .form-label { color: var(--text-muted); font-weight: 500; font-size: 0.88rem; }
-
-        /* Risk Badges */
         .badge-risk-low { background: rgba(46,204,113,0.12); color: #2ecc71; padding: 0.35rem 0.9rem; border-radius: 20px; font-weight: 600; font-size: 0.82rem; }
         .badge-risk-medium { background: rgba(243,156,18,0.12); color: #f39c12; padding: 0.35rem 0.9rem; border-radius: 20px; font-weight: 600; font-size: 0.82rem; }
         .badge-risk-high { background: rgba(230,126,34,0.12); color: #e67e22; padding: 0.35rem 0.9rem; border-radius: 20px; font-weight: 600; font-size: 0.82rem; }
         .badge-risk-critical { background: rgba(231,76,60,0.12); color: #e74c3c; padding: 0.35rem 0.9rem; border-radius: 20px; font-weight: 600; font-size: 0.82rem; }
-
-        /* Stat Cards */
-        .stat-card {
-            background: var(--bg-card); border: 1px solid var(--border);
-            border-radius: 16px; padding: 1.3rem; text-align: center;
-        }
-        .stat-number {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 2.2rem; font-weight: 700; line-height: 1;
-        }
+        .stat-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 1.3rem; text-align: center; }
+        .stat-number { font-family: 'Space Grotesk', sans-serif; font-size: 2.2rem; font-weight: 700; line-height: 1; }
         .stat-label { color: var(--text-muted); font-size: 0.82rem; margin-top: 0.3rem; }
-
-        /* Section */
-        .section-title {
-            font-family: 'Space Grotesk', sans-serif;
-            font-weight: 700; font-size: 1.7rem; margin-bottom: 0.4rem;
-        }
+        .section-title { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1.7rem; margin-bottom: 0.4rem; }
         .section-subtitle { color: var(--text-muted); margin-bottom: 1.8rem; font-size: 0.95rem; }
-
-        /* Tables */
         .table-dark-custom { color: var(--text-main); }
-        .table-dark-custom th {
-            color: var(--text-muted); font-weight: 600; font-size: 0.8rem;
-            text-transform: uppercase; letter-spacing: 0.5px; border-color: var(--border);
-        }
+        .table-dark-custom th { color: var(--text-muted); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; border-color: var(--border); }
         .table-dark-custom td { border-color: var(--border); vertical-align: middle; font-size: 0.9rem; }
-
-        /* Footer */
-        .footer {
-            background: rgba(11,17,32,0.95);
-            border-top: 1px solid var(--border);
-            padding: 1.2rem 0; margin-top: 4rem;
-        }
+        .footer { background: rgba(11,17,32,0.95); border-top: 1px solid var(--border); padding: 1.2rem 0; margin-top: 4rem; }
         .footer p { color: var(--text-muted); font-size: 0.8rem; margin: 0; }
-
-        /* Animations */
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(25px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(25px); } to { opacity: 1; transform: translateY(0); } }
         .animate-in { animation: fadeInUp 0.5s ease forwards; }
         .delay-1 { animation-delay: 0.1s; opacity: 0; }
         .delay-2 { animation-delay: 0.2s; opacity: 0; }
         .delay-3 { animation-delay: 0.3s; opacity: 0; }
         .delay-4 { animation-delay: 0.4s; opacity: 0; }
-
         .glow-accent { text-shadow: 0 0 25px rgba(0,201,167,0.25); }
-
-        /* Alert */
         .alert-custom { border-radius: 10px; border: none; padding: 0.8rem 1.2rem; }
-
-        /* Scrollbar */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: var(--bg-dark); }
         ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
@@ -177,65 +73,36 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-custom">
         <div class="container">
-            <a class="navbar-brand" href="{{ url_for('dashboard.home') }}">
-                <i class="fas fa-heartbeat"></i>HealthPredict AI
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+            <a class="navbar-brand" href="{{ url_for('dashboard.home') }}">HealthPredict AI</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"><span class="navbar-toggler-icon"></span></button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto align-items-center gap-1">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('dashboard.home') }}"><i class="fas fa-home me-1"></i>Home</a>
-                    </li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('dashboard.home') }}">Home</a></li>
                     {% if current_user.is_authenticated %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('symptom.symptom_checker') }}"><i class="fas fa-robot me-1"></i>Symptom Checker</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('dashboard.index') }}"><i class="fas fa-chart-line me-1"></i>Dashboard</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('dashboard.history') }}"><i class="fas fa-history me-1"></i>History</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('auth.logout') }}"><i class="fas fa-sign-out-alt me-1"></i>Logout</a>
-                    </li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('symptom.symptom_checker') }}">Symptom Checker</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('dashboard.index') }}">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('dashboard.history') }}">History</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a></li>
                     {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('auth.login') }}"><i class="fas fa-sign-in-alt me-1"></i>Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('auth.register') }}"><i class="fas fa-user-plus me-1"></i>Register</a>
-                    </li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login') }}">Login</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.register') }}">Register</a></li>
                     {% endif %}
                 </ul>
             </div>
         </div>
     </nav>
-
     <div class="container mt-3">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-        {% for category, message in messages %}
-        <div class="alert alert-{{ category }} alert-custom alert-dismissible fade show" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-        {% endfor %}
-        {% endif %}
-        {% endwith %}
+        {% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}{% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-custom alert-dismissible fade show" role="alert">{{ message }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+        {% endfor %}{% endif %}{% endwith %}
     </div>
-
     <main>{% block content %}{% endblock %}</main>
-
     <footer class="footer">
         <div class="container text-center">
-            <p><i class="fas fa-heartbeat me-1" style="color: var(--accent);"></i>HealthPredict AI &copy; 2026 | BSc Computing Project by Aarson Subba</p>
-            <p class="mt-1" style="font-size: 0.72rem;">Disclaimer: This system is for educational purposes only and does not replace professional medical consultation.</p>
+            <p>HealthPredict AI | BSc Computing Project by Aarson Subba | 2026</p>
+            <p style="font-size: 0.72rem; margin-top: 4px;">Disclaimer: This system is for educational purposes only and does not replace professional medical consultation.</p>
         </div>
     </footer>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     {% block extra_js %}{% endblock %}
 </body>

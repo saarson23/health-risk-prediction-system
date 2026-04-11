@@ -75,7 +75,7 @@ def recommend_doctors(disease_name, max_results=5):
                     'qualification': doc['qualification'],
                     'opd_schedule': doc['opd_schedule'],
                     'diseases_treated': doc['diseases_treated'],
-                    'rating': float(doc['rating']),
+                    'rating': 0.0 if (str(doc['rating']) == 'nan' or doc['rating'] != doc['rating']) else float(doc['rating']),
                     'notes': str(doc.get('notes', ''))
                 })
     disease_lower = disease_name.lower().strip()
@@ -91,7 +91,7 @@ def recommend_doctors(disease_name, max_results=5):
                 'qualification': doc['qualification'],
                 'opd_schedule': doc['opd_schedule'],
                 'diseases_treated': doc['diseases_treated'],
-                'rating': float(doc['rating']),
+                'rating': 0.0 if (str(doc['rating']) == 'nan' or doc['rating'] != doc['rating']) else float(doc['rating']),
                 'notes': str(doc.get('notes', ''))
             })
     recommended.sort(key=lambda x: -x['rating'])

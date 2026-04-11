@@ -1,1 +1,25 @@
-{% extends "base.html" %}{% block title %}Admin Login{% endblock %}{% block content %}<section style="padding:5rem 0"><div class="container"><div class="row justify-content-center"><div class="col-md-5"><div class="card-dark"><div class="text-center mb-4"><i class="fas fa-shield-alt" style="font-size:2.5rem;color:#00c9a7"></i><h3 style="font-family:Space Grotesk;font-weight:700;margin-top:0.8rem">Admin Login</h3><p style="color:#7b8ca3">Enter admin credentials</p></div><form method="POST"><div class="mb-3"><label class="form-label">Username</label><input type="text" name="username" class="form-control form-control-dark" placeholder="Admin username" required></div><div class="mb-4"><label class="form-label">Password</label><input type="password" name="password" class="form-control form-control-dark" placeholder="Admin password" required></div><button type="submit" class="btn btn-accent w-100"><i class="fas fa-lock me-2"></i>Login as Admin</button></form><div class="text-center mt-4"><a href="/" style="color:#7b8ca3;text-decoration:none"><i class="fas fa-arrow-left me-1"></i>Back to Home</a></div></div></div></div></div></section>{% endblock %}
+{% extends "base.html" %}{% block title %}Admin Login{% endblock %}{% block content %}<section style="padding:5rem 0">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-5">
+                <div class="card-dark">
+                    <div class="text-center mb-4"><i class="fas fa-shield-alt"
+                            style="font-size:2.5rem;color:#00c9a7"></i>
+                        <h3 style="font-family:Space Grotesk;font-weight:700;margin-top:0.8rem">Admin Login</h3>
+                        <p style="color:#7b8ca3">Enter admin credentials</p>
+                    </div>
+                    <form method="POST">
+                        <div class="mb-3"><label class="form-label">Username</label><input type="text" name="username"
+                                class="form-control form-control-dark" placeholder="Admin username" required></div>
+                        <div class="mb-4"><label class="form-label">Password</label><input type="password"
+                                name="password" class="form-control form-control-dark" placeholder="Admin password"
+                                required></div><button type="submit" class="btn btn-accent w-100"><i
+                                class="fas fa-lock me-2"></i>Login as Admin</button>
+                    </form>
+                    <div class="text-center mt-4"><a href="/" style="color:#7b8ca3;text-decoration:none"><i
+                                class="fas fa-arrow-left me-1"></i>Back to Home</a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>{% endblock %}
