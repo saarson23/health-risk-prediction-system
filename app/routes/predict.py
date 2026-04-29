@@ -1,6 +1,4 @@
-# ============================================================
 # app/routes/predict.py - Prediction Routes
-# ============================================================
 from flask import Blueprint, render_template, request, flash, jsonify
 from flask_login import login_required, current_user
 from app.models.database import db, Prediction
@@ -13,10 +11,9 @@ from app.utils.email_alerts import send_health_alert
 
 predict_bp = Blueprint('predict', __name__)
 
-# Load models (do this once when app starts)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-heart_model = joblib.load(os.path.join(BASE_DIR, 'models', 'heart_disease_model.pkl'))
-diabetes_model = joblib.load(os.path.join(BASE_DIR, 'models', 'diabetes_model.pkl'))
+from config import Config
+heart_model = joblib.load(Config.HEART_MODEL_PATH)
+diabetes_model = joblib.load(Config.DIABETES_MODEL_PATH)
 
 
 def get_risk_level(probability):

@@ -1,7 +1,7 @@
 """
-============================================================
+
 Unit Tests for Health Risk Prediction System
-============================================================
+
 Covers: Models, Auth, Dashboard, Admin, Predict utils, Config
 """
 
@@ -14,9 +14,9 @@ from app.models.database import db, User, Prediction, MedicalHistory, Alert
 from app.routes.predict import get_risk_level
 
 
-# ============================================================
+
 # FIXTURES
-# ============================================================
+
 
 @pytest.fixture
 def app():
@@ -96,9 +96,9 @@ def auth_client(client, sample_user):
     return client
 
 
-# ============================================================
+
 # 1. DATABASE MODEL TESTS
-# ============================================================
+
 
 class TestUserModel:
     """Tests for User model."""
@@ -275,9 +275,9 @@ class TestAlertModel:
             assert alert.sent is False
 
 
-# ============================================================
+
 # 2. AUTHENTICATION ROUTE TESTS
-# ============================================================
+
 
 class TestAuthRoutes:
     """Tests for authentication routes."""
@@ -355,9 +355,9 @@ class TestAuthRoutes:
         assert response.status_code == 302 or response.status_code == 401
 
 
-# ============================================================
+
 # 3. DASHBOARD ROUTE TESTS
-# ============================================================
+
 
 class TestDashboardRoutes:
     """Tests for dashboard routes."""
@@ -412,9 +412,9 @@ class TestDashboardRoutes:
         assert data['total'] == 3
 
 
-# ============================================================
+
 # 4. ADMIN ROUTE TESTS
-# ============================================================
+
 
 class TestAdminRoutes:
     """Tests for admin routes."""
@@ -469,9 +469,9 @@ class TestAdminRoutes:
         assert response.status_code == 302
 
 
-# ============================================================
+
 # 5. PREDICTION UTILITY TESTS
-# ============================================================
+
 
 class TestPredictUtils:
     """Tests for prediction utility functions."""
@@ -518,9 +518,8 @@ class TestPredictUtils:
         assert level == 'Critical'
 
 
-# ============================================================
-# 6. PREDICT ROUTE TESTS
-# ============================================================
+
+# 6. PREDICT ROUTE TESTS 
 
 class TestPredictRoutes:
     """Tests for prediction routes."""
@@ -534,9 +533,9 @@ class TestPredictRoutes:
         assert response.status_code == 200
 
 
-# ============================================================
+
 # 7. SYMPTOM CHECKER ROUTE TESTS
-# ============================================================
+
 
 class TestSymptomCheckerRoutes:
     """Tests for symptom checker routes."""
@@ -555,9 +554,9 @@ class TestSymptomCheckerRoutes:
         assert response.status_code == 302 or response.status_code == 401
 
 
-# ============================================================
+
 # 8. APP CONFIGURATION TESTS
-# ============================================================
+
 
 class TestAppConfig:
     """Tests for application configuration."""
@@ -586,9 +585,9 @@ class TestAppConfig:
         assert 'symptom' in blueprint_names
 
 
-# ============================================================
+
 # 9. DOCTOR RECOMMENDER TESTS
-# ============================================================
+
 
 class TestDoctorRecommender:
     """Tests for doctor recommendation utility."""
@@ -611,10 +610,9 @@ class TestDoctorRecommender:
             result = recommend_doctors('Heart attack', max_results=2)
             assert len(result) <= 2
 
-
-# ============================================================
+ 
 # 10. EMAIL ALERTS TESTS
-# ============================================================
+ 
 
 class TestEmailAlerts:
     """Tests for email alert utility."""
@@ -628,9 +626,9 @@ class TestEmailAlerts:
         assert callable(send_health_alert)
 
 
-# ============================================================
+ 
 # 11. SYMPTOM CHECKER UTILITY TESTS
-# ============================================================
+ 
 
 class TestSymptomUtils:
     """Tests for symptom checker utility functions."""
@@ -650,9 +648,9 @@ class TestSymptomUtils:
             assert len(categories) > 0
 
 
-# ============================================================
+ 
 # 12. EDGE CASE & INTEGRATION TESTS
-# ============================================================
+
 
 class TestEdgeCases:
     """Edge case and integration tests."""
