@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
-from flask_login import login_required, current_user
+from flask_login import login_required, current_user, logout_user
 from app.models.database import db, User, Prediction
 import pandas as pd
 import os
@@ -26,6 +26,7 @@ def admin_login():
         return redirect(url_for('admin.admin_dashboard'))
     if request.method == 'POST':
         if request.form.get('username') == ADMIN_USERNAME and request.form.get('password') == ADMIN_PASSWORD:
+            logout_user()  # clear any regular user session
             session['is_admin'] = True
             flash('Admin login successful!', 'success')
             return redirect(url_for('admin.admin_dashboard'))
@@ -91,8 +92,6 @@ def admin_delete_doctor(index):
         save_doctors(df)
         flash(f'{name} removed!', 'success')
     return redirect(url_for('admin.admin_doctors'))
-
-
 
 @admin_bp.route('/admin/users')
 def admin_users():

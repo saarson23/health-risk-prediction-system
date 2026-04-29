@@ -1,6 +1,4 @@
-# ============================================================
 # app/routes/symptom_checker.py - Symptom Chatbot Routes
-# ============================================================
 from flask import Blueprint, render_template, request, jsonify
 from flask_login import login_required, current_user
 from app.models.database import db, Prediction

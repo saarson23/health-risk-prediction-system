@@ -1,6 +1,5 @@
-# app/routes/auth.py - Authentication Routes
-
-from flask import Blueprint, render_template, redirect, url_for, flash, request
+# app/routes/auth.py
+from flask import Blueprint, render_template, redirect, url_for, flash, request, session
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.models.database import db, User
@@ -25,7 +24,6 @@ def register():
         password = request.form.get('password')
         phone = request.form.get('phone')
 
-        # Check if user exists
         if User.query.filter_by(email=email).first():
             flash('Email already registered.', 'danger')
             return redirect(url_for('auth.register'))
@@ -34,7 +32,6 @@ def register():
             flash('Username already taken.', 'danger')
             return redirect(url_for('auth.register'))
 
-        # Create new user
         user = User(
             username=username,
             email=email,
@@ -63,6 +60,7 @@ def login():
 
         if user and check_password_hash(user.password_hash, password):
             login_user(user)
+            session.pop('is_admin', None)  # clear admin session on user login
             flash('Login successful!', 'success')
             next_page = request.args.get('next')
             return redirect(next_page or url_for('dashboard.index'))
@@ -76,5 +74,6 @@ def login():
 @login_required
 def logout():
     logout_user()
+    session.pop('is_admin', None)  # also clear admin on logout
     flash('You have been logged out.', 'info')
     return redirect(url_for('auth.login'))
