@@ -1,6 +1,9 @@
+# app/utils/email_alerts.py
+import logging
 from flask_mail import Mail, Message
 from flask import current_app
 
+logger = logging.getLogger(__name__)
 mail = Mail()
 
 def init_mail(app):
@@ -55,7 +58,8 @@ def send_health_alert(user_email, username, disease, risk_level, probability, pr
             html=html_body
         )
         mail.send(msg)
+        logger.info(f'Health alert email sent to {user_email} for {disease}')
         return True
     except Exception as e:
-        print(f'Email error: {e}')
+        logger.error(f'Failed to send email to {user_email}: {e}')
         return False

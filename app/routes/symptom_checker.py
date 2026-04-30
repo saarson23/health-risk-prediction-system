@@ -1,4 +1,5 @@
-# app/routes/symptom_checker.py - Symptom Chatbot Routes
+# app/routes/symptom_checker.py
+import logging
 from flask import Blueprint, render_template, request, jsonify
 from flask_login import login_required, current_user
 from app.models.database import db, Prediction
@@ -10,9 +11,10 @@ import os
 from app.utils.doctor_recommender import recommend_doctors
 from app.utils.email_alerts import send_health_alert
 
+logger = logging.getLogger(__name__)
 symptom_bp = Blueprint('symptom', __name__)
 
-# Load models and data
+# load models and data
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 symptom_model = joblib.load(os.path.join(BASE_DIR, 'models', 'symptom_disease_model.pkl'))
@@ -20,11 +22,10 @@ label_encoder = joblib.load(os.path.join(BASE_DIR, 'models', 'label_encoder_dise
 severity_dict = joblib.load(os.path.join(BASE_DIR, 'models', 'severity_dict.pkl'))
 symptom_list = pd.read_csv(os.path.join(BASE_DIR, 'models', 'symptom_list.csv'))['symptom'].tolist()
 
-# Load descriptions and precautions
+# load descriptions and precautions
 description_df = pd.read_csv(os.path.join(BASE_DIR, 'data', 'raw', 'symptom_Description.csv'))
 precaution_df = pd.read_csv(os.path.join(BASE_DIR, 'data', 'raw', 'symptom_precaution.csv'))
 
-# Create clean lookup dicts
 description_dict = {}
 for _, row in description_df.iterrows():
     description_dict[str(row['Disease']).strip()] = str(row['Description'])
@@ -84,7 +85,6 @@ def get_symptom_categories():
         'Other': []
     }
 
-    # Add any symptoms not in categories to 'Other'
     categorized = set()
     for syms in categories.values():
         categorized.update(syms)
@@ -92,7 +92,6 @@ def get_symptom_categories():
         if s not in categorized:
             categories['Other'].append(s)
 
-    # Only include categories that have matching symptoms in our dataset
     filtered = {}
     for cat, syms in categories.items():
         valid = [s for s in syms if s in symptom_list]
@@ -122,29 +121,31 @@ def predict_symptoms():
     if len(selected_symptoms) < 2:
         return jsonify({'error': 'Please select at least 2 symptoms'}), 400
 
-    # Create feature vector with severity weights
-    feature_vector = np.zeros(len(symptom_list))
-    for symptom in selected_symptoms:
-        if symptom in symptom_list:
-            idx = symptom_list.index(symptom)
-            weight = severity_dict.get(symptom, 1)
-            feature_vector[idx] = weight
+    # validate that submitted symptoms exist in our list
+    valid_symptoms = [s for s in selected_symptoms if s in symptom_list]
+    if len(valid_symptoms) < 2:
+        return jsonify({'error': 'Not enough valid symptoms selected'}), 400
 
-    # Predict
+    # create feature vector with severity weights
+    feature_vector = np.zeros(len(symptom_list))
+    for symptom in valid_symptoms:
+        idx = symptom_list.index(symptom)
+        weight = severity_dict.get(symptom, 1)
+        feature_vector[idx] = weight
+
     feature_vector = feature_vector.reshape(1, -1)
     prediction = symptom_model.predict(feature_vector)[0]
     probabilities = symptom_model.predict_proba(feature_vector)[0]
 
-    # Get top 3 diseases
+    # top 3 diseases
     top3_idx = probabilities.argsort()[-3:][::-1]
     top3_diseases = label_encoder.inverse_transform(top3_idx)
     top3_proba = probabilities[top3_idx]
 
-    # Primary prediction
     primary_disease = top3_diseases[0]
     primary_confidence = float(top3_proba[0])
 
-    # Risk level
+    # risk level
     if primary_confidence >= 0.75:
         risk_level = 'Critical'
         risk_color = '#e74c3c'
@@ -158,14 +159,11 @@ def predict_symptoms():
         risk_level = 'Low'
         risk_color = '#2ecc71'
 
-    # Get description and precautions
     description = description_dict.get(primary_disease, 'No description available.')
     precautions = precaution_dict.get(primary_disease, ['Consult a doctor'])
+    related = get_related_symptoms(valid_symptoms, primary_disease)
 
-    # Get related symptoms to ask about
-    related = get_related_symptoms(selected_symptoms, primary_disease)
-
-    # Save to database
+    # save to database
     try:
         pred = Prediction(
             user_id=current_user.id,
@@ -173,16 +171,17 @@ def predict_symptoms():
             prediction_result=1 if primary_confidence > 0.5 else 0,
             probability=primary_confidence,
             risk_level=risk_level,
-            input_data=json.dumps(selected_symptoms),
+            input_data=json.dumps(valid_symptoms),
             explanation=json.dumps({
                 'top3': [{'disease': d, 'confidence': float(p)} for d, p in zip(top3_diseases, top3_proba)],
-                'symptoms': selected_symptoms
+                'symptoms': valid_symptoms
             })
         )
         db.session.add(pred)
         db.session.commit()
+        logger.info(f'Symptom prediction for {current_user.username}: {primary_disease} ({risk_level})')
     except Exception as e:
-        print(f"DB save error: {e}")
+        logger.error(f'Failed to save symptom prediction: {e}')
 
     result = {
         'primary_disease': primary_disease,
@@ -195,12 +194,12 @@ def predict_symptoms():
             {'disease': d, 'confidence': f"{p * 100:.1f}"}
             for d, p in zip(top3_diseases, top3_proba)
         ],
-        'symptoms_checked': [format_symptom_name(s) for s in selected_symptoms],
+        'symptoms_checked': [format_symptom_name(s) for s in valid_symptoms],
         'related_symptoms': related,
         'doctors': recommend_doctors(primary_disease, max_results=5)
     }
 
-    # Send email alert for High/Critical risk
+    # send email alert for high/critical risk
     if risk_level in ['High', 'Critical']:
         try:
             doctors_for_email = recommend_doctors(primary_disease, max_results=3)
@@ -213,16 +212,15 @@ def predict_symptoms():
                 precautions=precautions,
                 doctors=doctors_for_email
             )
-            print(f'Email sent to {current_user.email}!')
+            logger.info(f'Symptom alert email sent to {current_user.email}')
         except Exception as e:
-            print(f'Email error: {e}')
+            logger.error(f'Symptom alert email failed: {e}')
 
     return jsonify(result)
 
 
 def get_related_symptoms(selected, predicted_disease):
     """Suggest related symptoms the user might also have."""
-    # Find common symptoms for this disease from training data
     try:
         symptom_df = pd.read_csv(os.path.join(BASE_DIR, 'data', 'raw', 'dataset.csv'))
         disease_rows = symptom_df[symptom_df['Disease'].str.strip() == predicted_disease]
@@ -234,10 +232,10 @@ def get_related_symptoms(selected, predicted_disease):
                 if s and s != 'nan':
                     common_symptoms.add(s)
 
-        # Remove already selected symptoms
         remaining = common_symptoms - set(selected)
         return [(s, format_symptom_name(s)) for s in list(remaining)[:6]]
-    except:
+    except Exception as e:
+        logger.error(f'Failed to get related symptoms: {e}')
         return []
 
 

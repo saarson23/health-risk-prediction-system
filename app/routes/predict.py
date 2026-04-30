@@ -1,4 +1,5 @@
-# app/routes/predict.py - Prediction Routes
+# app/routes/predict.py
+import logging
 from flask import Blueprint, render_template, request, flash, jsonify
 from flask_login import login_required, current_user
 from app.models.database import db, Prediction
@@ -9,6 +10,7 @@ import os
 from app.utils.doctor_recommender import recommend_doctors
 from app.utils.email_alerts import send_health_alert
 
+logger = logging.getLogger(__name__)
 predict_bp = Blueprint('predict', __name__)
 
 from config import Config
@@ -28,6 +30,32 @@ def get_risk_level(probability):
         return 'Low', '#2ecc71'
 
 
+def safe_float(value, default=0.0, min_val=None, max_val=None):
+    """Safely convert form value to float with optional range check."""
+    try:
+        result = float(value)
+        if min_val is not None and result < min_val:
+            return default
+        if max_val is not None and result > max_val:
+            return default
+        return result
+    except (ValueError, TypeError):
+        return default
+
+
+def safe_int(value, default=0, min_val=None, max_val=None):
+    """Safely convert form value to int with optional range check."""
+    try:
+        result = int(value)
+        if min_val is not None and result < min_val:
+            return default
+        if max_val is not None and result > max_val:
+            return default
+        return result
+    except (ValueError, TypeError):
+        return default
+
+
 @predict_bp.route('/predict', methods=['GET', 'POST'])
 @login_required
 def predict():
@@ -43,7 +71,7 @@ def predict():
                 flash('Invalid disease type selected.', 'danger')
                 return render_template('predict.html')
 
-            # Save prediction to database
+            # save prediction
             prediction = Prediction(
                 user_id=current_user.id,
                 disease_type=disease_type,
@@ -55,8 +83,9 @@ def predict():
             )
             db.session.add(prediction)
             db.session.commit()
+            logger.info(f'Prediction saved for user {current_user.username}: {disease_type} - {result["risk_level"]}')
 
-            # Send email alert for High/Critical risk
+            # send email alert for high/critical risk
             if result['risk_level'] in ['High', 'Critical']:
                 try:
                     docs = result.get('recommendations', [])
@@ -71,12 +100,14 @@ def predict():
                         precautions=precaution_list,
                         doctors=doctor_list
                     )
+                    logger.info(f'Email alert sent to {current_user.email}')
                 except Exception as e:
-                    print(f'Email alert error: {e}')
+                    logger.error(f'Email alert failed for {current_user.email}: {e}')
 
             return render_template('results.html', result=result)
 
         except Exception as e:
+            logger.error(f'Prediction error for user {current_user.username}: {e}')
             flash(f'Prediction error: {str(e)}', 'danger')
             return render_template('predict.html')
 
@@ -84,24 +115,24 @@ def predict():
 
 
 def predict_heart(form_data):
-    """Process heart disease prediction from form data."""
+    """Process heart disease prediction with validated input."""
     features = {
-        'age': float(form_data.get('age', 0)),
-        'sex': int(form_data.get('sex', 0)),
-        'cp': int(form_data.get('cp', 0)),
-        'trestbps': float(form_data.get('trestbps', 0)),
-        'chol': float(form_data.get('chol', 0)),
-        'fbs': int(form_data.get('fbs', 0)),
-        'restecg': int(form_data.get('restecg', 0)),
-        'thalach': float(form_data.get('thalach', 0)),
-        'exang': int(form_data.get('exang', 0)),
-        'oldpeak': float(form_data.get('oldpeak', 0)),
-        'slope': int(form_data.get('slope', 0)),
-        'ca': int(form_data.get('ca', 0)),
-        'thal': int(form_data.get('thal', 0)),
+        'age': safe_float(form_data.get('age'), min_val=1, max_val=120),
+        'sex': safe_int(form_data.get('sex'), min_val=0, max_val=1),
+        'cp': safe_int(form_data.get('cp'), min_val=0, max_val=3),
+        'trestbps': safe_float(form_data.get('trestbps'), min_val=50, max_val=300),
+        'chol': safe_float(form_data.get('chol'), min_val=50, max_val=600),
+        'fbs': safe_int(form_data.get('fbs'), min_val=0, max_val=1),
+        'restecg': safe_int(form_data.get('restecg'), min_val=0, max_val=2),
+        'thalach': safe_float(form_data.get('thalach'), min_val=50, max_val=250),
+        'exang': safe_int(form_data.get('exang'), min_val=0, max_val=1),
+        'oldpeak': safe_float(form_data.get('oldpeak'), min_val=0, max_val=10),
+        'slope': safe_int(form_data.get('slope'), min_val=0, max_val=2),
+        'ca': safe_int(form_data.get('ca'), min_val=0, max_val=4),
+        'thal': safe_int(form_data.get('thal'), min_val=0, max_val=3),
     }
 
-    # Add engineered features
+    # engineered features
     features['age_group'] = 0 if features['age'] <= 40 else 1 if features['age'] <= 50 else 2 if features['age'] <= 60 else 3
     features['risk_score'] = (
         (1 if features['trestbps'] > 140 else 0) +
@@ -111,10 +142,8 @@ def predict_heart(form_data):
         features['exang']
     )
 
-    # Create feature array in correct order
     feature_array = np.array(list(features.values())).reshape(1, -1)
 
-    # Predict
     prediction = heart_model.predict(feature_array)[0]
     probability = heart_model.predict_proba(feature_array)[0][1]
     risk_level, risk_color = get_risk_level(probability)
@@ -133,19 +162,19 @@ def predict_heart(form_data):
 
 
 def predict_diabetes(form_data):
-    """Process diabetes prediction from form data."""
+    """Process diabetes prediction with validated input."""
     features = {
-        'Pregnancies': int(form_data.get('pregnancies', 0)),
-        'Glucose': float(form_data.get('glucose', 0)),
-        'BloodPressure': float(form_data.get('blood_pressure', 0)),
-        'SkinThickness': float(form_data.get('skin_thickness', 0)),
-        'Insulin': float(form_data.get('insulin', 0)),
-        'BMI': float(form_data.get('bmi', 0)),
-        'DiabetesPedigreeFunction': float(form_data.get('dpf', 0)),
-        'Age': int(form_data.get('age', 0)),
+        'Pregnancies': safe_int(form_data.get('pregnancies'), min_val=0, max_val=20),
+        'Glucose': safe_float(form_data.get('glucose'), min_val=0, max_val=300),
+        'BloodPressure': safe_float(form_data.get('blood_pressure'), min_val=0, max_val=200),
+        'SkinThickness': safe_float(form_data.get('skin_thickness'), min_val=0, max_val=100),
+        'Insulin': safe_float(form_data.get('insulin'), min_val=0, max_val=900),
+        'BMI': safe_float(form_data.get('bmi'), min_val=0, max_val=70),
+        'DiabetesPedigreeFunction': safe_float(form_data.get('dpf'), min_val=0, max_val=3),
+        'Age': safe_int(form_data.get('age'), min_val=1, max_val=120),
     }
 
-    # Add engineered features
+    # engineered features
     bmi = features['BMI']
     features['BMI_Category'] = 0 if bmi <= 18.5 else 1 if bmi <= 24.9 else 2 if bmi <= 29.9 else 3
 

@@ -2,12 +2,28 @@ from flask import Flask
 from app.utils.email_alerts import mail
 from flask_login import LoginManager
 from config import Config
+import logging
+import os
 
 login_manager = LoginManager()
 
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
+
+    # setup logging
+    log_dir = os.path.dirname(Config.LOG_FILE)
+    if not os.path.exists(log_dir):
+        os.makedirs(log_dir)
+
+    file_handler = logging.FileHandler(Config.LOG_FILE)
+    file_handler.setLevel(logging.INFO)
+    file_handler.setFormatter(logging.Formatter(
+        '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    ))
+    app.logger.addHandler(file_handler)
+    app.logger.setLevel(logging.INFO)
+    app.logger.info('Health Risk Prediction System started')
 
     from app.models.database import db
     db.init_app(app)
